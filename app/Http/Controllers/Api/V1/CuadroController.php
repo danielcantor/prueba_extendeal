@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class CuadroController extends Controller
 {
+    public $filters, $fields;
+
     public function __construct()
     {
         $this->middleware('jwt.auth');
@@ -22,12 +24,14 @@ class CuadroController extends Controller
     public function index(Request $request)
     {
     
-        if($request->filters){
+        $query = '';
 
-            $filters = $request->filters;
-            $query = '';
+        $this->filters = $request->filters;
+        $this->fields  = $request->fields;
 
-            foreach ($filters as $key => $value) {
+        if( !empty( $this->filters ) ){
+
+            foreach ($this->filters as $key => $value) {
 
                 $key = str_replace("'", '' , $key);
 
@@ -44,15 +48,24 @@ class CuadroController extends Controller
             }
         }
 
-        if($request->fields){
+        if(!empty( $this->fields )) {
 
-            $fields = explode(',',$request->fields);
-            $query = $query->get($fields);
+            $fields = explode(',',$this->fields);
+            
 
+            if($query){
+
+                $query = $query->get($fields);
+    
+            }else{
+    
+                $query = Cuadro::get($fields);
+    
+            }
         }else if($query){
 
             $query = $query->get();
-
+            
         }else{
 
             $query = Cuadro::get();
