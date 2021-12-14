@@ -24,3 +24,5 @@ Route::group([
     Route::post('refresh', [\App\Http\Controllers\Api\V1\AuthController::class, 'refresh'])->name('refresh');
     Route::post('me', [\App\Http\Controllers\Api\V1\AuthController::class, 'me'])->name('me');
 });
+
+Route::apiResource('v1/cuadros', App\Http\Controllers\Api\V1\CuadroController::class)->middleware('api');
